@@ -1,0 +1,36 @@
+table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  text-align: center;
+  border: 1px solid #202A25;
+  min-width: 600px;
+  max-width: 1500px;
+}
+table thead th {
+  background-color: #5F4BB6;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  border: 1px solid #202A25;
+}
+table thead th:hover {
+  background-color: #C4EBC8;
+  cursor: pointer;
+}
+table tbody tr:nth-child(even) {
+  background-color: #86A5D9;
+}
+table tbody tr {
+  border: 1px solid #202A25;
+}
+table tbody th {
+  background-color: #26F0F1;
+  position: sticky;
+  left: 0;
+  border: 1px solid #202A25;
+}
+table tbody td {
+  border: 1px solid #202A25;
+}
+
+/*# sourceMappingURL=styles.css.map */

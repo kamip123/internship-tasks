@@ -1,0 +1,56 @@
+$primary: #5F4BB6;
+$secondary: #86A5D9;
+$accent: #26F0F1;
+$funny: #C4EBC8;
+$dark: #202A25;
+
+table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  text-align: center;
+  border: 1px solid $dark;
+  min-width: 600px;
+  max-width: 1500px;
+
+  thead {
+    th {
+      background-color: $primary;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      border: 1px solid $dark;
+
+      &:hover {
+        background-color: $funny;
+        cursor: pointer;
+      }
+    }
+  }
+
+  tbody {
+    tr:nth-child(even) {
+      background-color: $secondary;
+    }
+
+    tr {
+      border: 1px solid $dark;
+    }
+
+    th {
+      background-color: $accent;
+      position: sticky;
+      left: 0;
+      border: 1px solid $dark;
+    }
+
+    td {
+      border: 1px solid $dark;
+    }
+  }
+}
+
+
+
+
+
+
