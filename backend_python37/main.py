@@ -152,7 +152,7 @@ if __name__ == '__main__':
 
 # todo
 # obliczenie średniej liczby osób, które przystąpiły do egzaminu dla danego województwa w danym roku, np. 2015 - 123456
-# readme
-# testy
 # api
-# sqlite
+# test / almost
+# sqlite / almost
+# readme
