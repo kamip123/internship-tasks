@@ -1,16 +1,35 @@
 import urllib.request as request
 import json
-from main import MaturaResults
+import threading
+import time
+
+from data_class import MaturaResults
+
+
+def show_loading_screen():
+    print('Loading', end="")
+    while getattr(threading.currentThread(), "run", True):
+        time.sleep(1)
+        print('.', end="")
 
 
 def get_data():
-    with request.urlopen('https://api.dane.gov.pl/resources/17201/data?page=1') as response:
+    show_loading = threading.Thread(target=show_loading_screen, daemon=True)
+    show_loading.start()
+
+    api_number = open("api_number.txt").readline().rstrip()
+
+    try:
+        response = request.urlopen('https://api.dane.gov.pl/resources/' + api_number + '/data?page=1')
         if response.getcode() == 200:
             source = response.read()
             data = json.loads(source)
         else:
-            print('An error occurred while attempting to retrieve data from the API.')
-            return -1
+            print('\nAn error occurred while attempting to retrieve data from the API.\n')
+            return 1
+    except:
+        print('\nAn error occurred while attempting to retrieve data from the API.\n')
+        return 1
 
     if data['links']['self'] != data['links']['last']:
         data_of_ssc = [data['attributes'] for data in data['data']]
@@ -18,7 +37,7 @@ def get_data():
         last_page = last_page[last_page.find('page=')+5:]
 
         for i in range(2, int(last_page)+1):
-            with request.urlopen('https://api.dane.gov.pl/resources/17201/data?page=' + str(i)) as response:
+            with request.urlopen('https://api.dane.gov.pl/resources/' + api_number + '/data?page=' + str(i)) as response:
                 if response.getcode() == 200:
                     source = response.read()
                     data = json.loads(source)
@@ -32,6 +51,8 @@ def get_data():
         data_of_ssc = [data['attributes'] for data in data['data']]
 
     file_values = [MaturaResults(values['col1'], values['col2'], values['col3'], values['col4'], values['col5']) for values in data_of_ssc]
+    show_loading.run = False
+    print('\nRead data successfully')
 
     return file_values
 

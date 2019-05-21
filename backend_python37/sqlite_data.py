@@ -1,13 +1,24 @@
 import sqlite3
 from sqlite3 import Error
-from main import read_csv
-from api_data import get_data
+
+from csv_data import read_csv
+from data_class import MaturaResults
 
 
-def create_table(conn, create_table_ssc):
+def create_table():
+    conn = create_connection("ssc_results.db")
+
+    sql_create_ssc_table = """CREATE TABLE IF NOT EXISTS ssc (
+                                    id integer PRIMARY KEY,
+                                    scope text NOT NULL,
+                                    action text NOT NULL,
+                                    gender text NOT NULL,
+                                    year integer  NOT NULL,
+                                    amount integer  NOT NULL
+                                ); """
     try:
-        c = conn.cursor()
-        c.execute(create_table_ssc)
+        cur = conn.cursor()
+        cur.execute(sql_create_ssc_table)
         conn.commit()
     except Error as e:
         print(e)
@@ -23,7 +34,9 @@ def create_connection(db_file):
     return None
 
 
-def put_data_to_database(conn, cur, file_values):
+def put_data_to_database(file_values):
+    conn = create_connection("ssc_results.db")
+    cur = conn.cursor()
     sql = ''' INSERT INTO ssc(scope,action,gender,year,amount)
                   VALUES(?,?,?,?,?) '''
 
@@ -34,38 +47,31 @@ def put_data_to_database(conn, cur, file_values):
     conn.commit()
 
 
-def get_all_data(conn):
+def get_all_data():
+    conn = create_connection("ssc_results.db")
     cur = conn.cursor()
     cur.execute("SELECT * FROM ssc")
     rows = cur.fetchall()
 
     if len(rows) < 1:
-        # column_names, file_values = read_csv('Liczba_osób_które_przystapiły_lub_zdały_egzamin_maturalny.csv')
-        file_values = get_data()
-        put_data_to_database(conn, cur, file_values)
+        column_names, file_values = read_csv('Liczba_osób_które_przystapiły_lub_zdały_egzamin_maturalny.csv')
+        put_data_to_database(file_values)
         cur.execute("SELECT * FROM ssc")
         rows = cur.fetchall()
 
-    for row in rows:
-        print(row)
+    file_values = [MaturaResults(values[1], values[2], values[3], values[4], values[5]) for values in rows]
+
+    return file_values
 
 
 def main():
     database = "ssc_results.db"
-    sql_create_ssc_table = """CREATE TABLE IF NOT EXISTS ssc (
-                                id integer PRIMARY KEY,
-                                scope text NOT NULL,
-                                action text NOT NULL,
-                                gender text NOT NULL,
-                                year integer  NOT NULL,
-                                amount integer  NOT NULL
-                            ); """
 
     conn = create_connection(database)
     if conn is not None:
-        create_table(conn, sql_create_ssc_table)
+        create_table()
         print('Connection successful!')
-        get_all_data(conn)
+        get_all_data()
     else:
         print('Connection error!')
 

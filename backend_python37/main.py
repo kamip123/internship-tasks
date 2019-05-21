@@ -1,140 +1,24 @@
-import random
+from data_class import Prefecture
+import sqlite_data
+from api_data import get_data
+from csv_data import read_csv
 
 
-class MaturaResults:
-    def __init__(self, scope, action, gender, year, amount):
-        self.scope = scope
-        self.action = action
-        self.gender = gender
-        self.year = year
-        self.amount = amount
+def compare_two_prefectures(prefectures, first_prefecture, second_prefecture):
+    print('\nPorównanie 2 województw\n')
+    print('Porównywanie ' + prefectures[first_prefecture].name + ' i ' + prefectures[second_prefecture].name)
 
-    def __str__(self):
-        return self.scope + ' ' + self.action + ' ' + self.gender + ' ' + self.year + ' ' + self.amount
-
-
-class Prefecture:
-    def __init__(self, name):
-        self.name = name
-        self.maturaResults = []
-
-    def pass_ratio(self, year, gender="both"):
-        temp_attended = 0
-        temp_passed = 0
-        for result in self.maturaResults:
-            if int(result.year) == year:
-                if result.action == 'przystąpiło':
-                    temp_attended += int(result.amount)
-                elif result.action == 'zdało':
-                    temp_passed += int(result.amount)
-        ratio = temp_passed * 100 / temp_attended
-        return ratio
-
-    def find_year(self, year):
-        for result in self.maturaResults:
-            if result.year == str(year):
-                return True
-        return False
-
-    def regression(self, year_start, year_end):
-        if not self.find_year(year_start):
-            return -1
-        if not self.find_year(year_end):
-            return -1
-
-        for year in range(year_start + 1, year_end):
-            if self.pass_ratio(year) < self.pass_ratio(year-1):
-                print('wojewodztwo: ' + str(self.name) + ':' + str(year-1) + ' -> ' + str(year))
-
-    def find_min_max_years(self):
-        temp_years = [int(result.year) for result in self.maturaResults]
-        return min(temp_years), max(temp_years)
-
-    def pass_ratio_all(self, print_result=True):
-        min_year, max_year = self.find_min_max_years()
-        result = []
-        for year in range(min_year, max_year):
-            ratio = self.pass_ratio(year)
-            if print_result:
-                print(self.name + ' ' + str(year) + ': ' + str(ratio))
-            result.append(ratio)
-        return result, min_year, max_year
-
-    def __str__(self):
-        return self.name + ' ' + str(len(self.maturaResults))
-
-
-def read_csv(file_name):
-    column_names = None
-    file_values = []
-    counter = 0
-
-    for line in open(file_name, "r"):
-        if counter == 0:
-            values = line.split(';')
-            column_names = [value.rstrip() for value in values]
-            counter += 1
-        else:
-            values = line.split(';')
-            file_values.append(MaturaResults(values[0], values[1], values[2], values[3], values[4]))
-
-    return column_names, file_values
-
-
-def main():
-    # static values
-    file_name = 'Liczba_osób_które_przystapiły_lub_zdały_egzamin_maturalny.csv'
-    year = 2010
-    first_prefecture = 1
-    second_prefecture = 2
-    regression_year_start = 2010
-    regression_year_end = 2018
-
-    column_names, file_values = read_csv(file_name)
-
-    prefectures_names = []
-    for value in file_values:
-        if value.scope not in prefectures_names:
-            prefectures_names.append(value.scope)
-
-    prefectures = [Prefecture(scope) for scope in prefectures_names]
-
-    for index, prefecture in enumerate(prefectures):
-        for value in file_values:
-            if value.scope == prefecture.name:
-                prefectures[index].maturaResults.append(value)
-
-    # ratio all
-    print('\nratio for first prefecture\n')
-    prefectures[first_prefecture].pass_ratio_all()
-
-    # ratio one year for everything
-    print('\nratio for all prefectures\n')
-    for index in range(len(prefectures_names)):
-        print(str(prefectures[index].name) + ' ' + str(prefectures[index].pass_ratio(year)))
-
-    # best prefecture
-    temp_ratios = []
-    for prefecture in prefectures:
-        temp_ratios.append(prefecture.pass_ratio(year))
-
-    print('\nBest prefecture in year: ' + str(year) + ' is: ' + str(prefectures[temp_ratios.index(max(temp_ratios))].name) + ' with a score of: ' + str(max(temp_ratios)))
-
-    # regression
-    print('\nRegression in prefectures: \n')
-    for prefecture in prefectures:
-        prefecture.regression(regression_year_start, regression_year_end)
-
-    # compare
-    print('\nCompare 2 prefectures\n')
-    print('Comparing ' + prefectures[first_prefecture].name + ' and ' + prefectures[second_prefecture].name)
     ratios_first, min_year_first, max_year_first = prefectures[first_prefecture].pass_ratio_all(False)
     ratios_second, min_year_second, max_year_second = prefectures[second_prefecture].pass_ratio_all(False)
 
     if min_year_first > min_year_second:
-        print('There are more results for first set. Can not compare. Aborting...')
+        print('Ilość danych o pierwszym województwie różni się od drugiego. Przerywam działanie...')
     elif min_year_first < min_year_second:
-        print('There are more results for second set. Can not compare. Aborting...')
+        print('Ilość danych o drugim województwie różni się od pierwszego. Przerywam działanie...')
+    elif max_year_first > max_year_second:
+        print('Ilość danych o pierwszym województwie różni się od drugiego. Przerywam działanie...')
+    elif max_year_first < max_year_second:
+        print('Ilość danych o drugim województwie różni się od pierwszego. Przerywam działanie...')
     else:
         temp_year = min_year_first
         for i in range(len(ratios_first)):
@@ -143,16 +27,178 @@ def main():
             elif ratios_first[i] < ratios_second[i]:
                 print(str(temp_year) + ' ' + str(prefectures[second_prefecture].name))
             else:
-                print(str(temp_year) + ' ' + str(prefectures[first_prefecture].name) + ' ' + str(prefectures[second_prefecture].name))
+                print(str(temp_year) + ' ' + str(prefectures[first_prefecture].name) + ' ' + str(
+                    prefectures[second_prefecture].name))
             temp_year += 1
+
+
+def switch_task(value):
+    switch_tasks = {
+        '1': "amount",
+        '2': "ratio all",
+        '3': "best prefecture",
+        '4': "regression",
+        '5': "compare",
+        '6': "quit",
+    }
+    return switch_tasks.get(value, "wrong")
+
+
+def switch_data_source(value):
+    switch_tasks = {
+        '1': "csv",
+        '2': "database",
+        '3': "api",
+        '4': "read from api to database",
+    }
+
+    return switch_tasks.get(value, "wrong")
+
+
+def get_user_request_task():
+
+    print('\n')
+    for index in range(48):
+        if index == 0:
+            print('+', end="")
+        elif index == 47:
+            print('+')
+        else:
+            print('-', end="")
+
+    print('| Program do sprawdzania wyników matury:       |')
+    print('|                                              |')
+    print('| 1: Sprawdz ile osob przystąpiło do egzaminu. |')
+    print('| 2: Procentowa zdawalność dla województwa.    |')
+    print('| 3: Najlepsze województwo w danym roku.       |')
+    print('| 4. Wykrycie regresji na przestrzeni lat.     |')
+    print('| 5. Porównanie 2 wojewodztw.                  |')
+    print('| 6. Wyjdź z programu.                         |')
+
+    for index in range(48):
+        if index == 0:
+            print('+', end="")
+        elif index == 47:
+            print('+')
+        else:
+            print('-', end="")
+    print('Twój wybór: ', end="")
+    task_to_do = input()
+
+    task_to_do = switch_task(task_to_do)
+
+    if task_to_do == "wrong":
+        return "wrong", "wrong"
+
+    if task_to_do == "quit":
+        return "quit", "quit"
+
+    for index in range(45):
+        if index == 0:
+            print('+', end="")
+        elif index == 44:
+            print('+')
+        else:
+            print('-', end="")
+
+    print('| Dane mają być pobrane z:                  |')
+    print('|                                           |')
+    print('| 1: Plik csv                               |')
+    print('| 2: Baza SQLite                            |')
+    print('| 3: Api - wymagane połaczenie z internetem |')
+    print('| 4. Pobierz dane z api i zapisz do bazy    |')
+
+    for index in range(45):
+        if index == 0:
+            print('+', end="")
+        elif index == 44:
+            print('+')
+        else:
+            print('-', end="")
+
+    print('Twój wybór: ', end="")
+    data_source = input()
+
+    data_source = switch_data_source(data_source)
+
+    if data_source == "wrong":
+        return "wrong", "wrong"
+
+    return task_to_do, data_source
+
+
+def main():
+    while True:
+        # static default values
+        file_name = 'Liczba_osób_które_przystapiły_lub_zdały_egzamin_maturalny.csv'
+        year = 2010
+        first_prefecture = 1
+        second_prefecture = 2
+        regression_year_start = 2010
+        regression_year_end = 2018
+
+        while True:
+            task_to_do, data_source = get_user_request_task()
+            if task_to_do == "wrong" or data_source == "wrong":
+                print('Proszę podać poprawne dane.')
+            elif data_source == "read from api to database":
+                exam_data_from_api = get_data()
+                sqlite_data.create_table()
+                sqlite_data.put_data_to_database(exam_data_from_api)
+            else:
+                break
+
+        if task_to_do == 'quit':
+            return 'quit'
+
+        if data_source == "database":
+            file_values = sqlite_data.get_all_data()
+        elif data_source == "api":
+            file_values = get_data()
+            if file_values == 1:
+                print('Wystąpił błąd w czasie pobierania danych. Wykorzystam plik csv.')
+                column_names, file_values = read_csv(file_name)
+        else:
+            column_names, file_values = read_csv(file_name)
+
+        prefectures_names = []
+        for value in file_values:
+            if value.scope not in prefectures_names:
+                prefectures_names.append(value.scope)
+
+        prefectures = [Prefecture(scope) for scope in prefectures_names]
+
+        for index, prefecture in enumerate(prefectures):
+            for value in file_values:
+                if value.scope == prefecture.name:
+                    prefectures[index].maturaResults.append(value)
+
+        if task_to_do == 'amount':
+            print('\nIlośc osób, które podeszły do egzminu\n')
+            print(str(prefectures[first_prefecture].name) + ' ' + str(prefectures[first_prefecture].approached(year)))
+
+        elif task_to_do == 'ratio all':
+            print('\nŚrednia dla województwa\n')
+            prefectures[first_prefecture].pass_ratio_all()
+
+        elif task_to_do == 'best prefecture':
+            temp_ratios = [prefecture.pass_ratio(year) for prefecture in prefectures]
+            print('\nNajlepsze województwo w roku: ' + str(year) + ' to: ' + str(
+                prefectures[temp_ratios.index(max(temp_ratios))].name) + ' z średnią: ' + str(max(temp_ratios)))
+
+        elif task_to_do == 'regression':
+            print('\nRegresja w województwach: \n')
+            for prefecture in prefectures:
+                prefecture.regression(regression_year_start, regression_year_end)
+
+        elif task_to_do == 'compare':
+            compare_two_prefectures(prefectures, first_prefecture, second_prefecture)
 
 
 if __name__ == '__main__':
     main()
 
 # todo
-# obliczenie średniej liczby osób, które przystąpiły do egzaminu dla danego województwa w danym roku, np. 2015 - 123456
-# api
-# test / almost
-# sqlite / almost
+# manually select year and gender
+# tests / almost
 # readme

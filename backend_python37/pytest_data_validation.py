@@ -1,5 +1,6 @@
 import pytest
-from main import MaturaResults
+
+from data_class import MaturaResults
 
 
 @pytest.fixture()
