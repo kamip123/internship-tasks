@@ -300,6 +300,5 @@ window.onload = getData;
 // todo
 // data
 // 3) napisać funkcję, która zwróci tytuł postu z najwyższym stosunkiem głosów dodatnich i ujemnych (w przypadku kilku postów o jednakowych współczynnikach, wybrać najnowszy z nich)
-// 4) napisać funkcję, która wyświetli posty tylko z ostatniego dnia (24h wstecz)
 // zrobic readme
 // napisac testy

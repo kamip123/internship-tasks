@@ -37,6 +37,15 @@ def create_connection(db_file):
 def put_data_to_database(file_values):
     conn = create_connection("ssc_results.db")
     cur = conn.cursor()
+
+    if type(file_values) == int:
+        print('Otrzymano niepoprawne dane.')
+        return -1
+
+    sql = 'DELETE FROM ssc'
+    cur.execute(sql)
+    conn.commit()
+
     sql = ''' INSERT INTO ssc(scope,action,gender,year,amount)
                   VALUES(?,?,?,?,?) '''
 

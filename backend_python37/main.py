@@ -4,12 +4,12 @@ from api_data import get_data
 from csv_data import read_csv
 
 
-def compare_two_prefectures(prefectures, first_prefecture, second_prefecture):
+def compare_two_prefectures(prefectures, first_prefecture, second_prefecture, gender):
     print('\nPorównanie 2 województw\n')
     print('Porównywanie ' + prefectures[first_prefecture].name + ' i ' + prefectures[second_prefecture].name)
 
-    ratios_first, min_year_first, max_year_first = prefectures[first_prefecture].pass_ratio_all(False)
-    ratios_second, min_year_second, max_year_second = prefectures[second_prefecture].pass_ratio_all(False)
+    ratios_first, min_year_first, max_year_first = prefectures[first_prefecture].pass_ratio_all(False, gender)
+    ratios_second, min_year_second, max_year_second = prefectures[second_prefecture].pass_ratio_all(False, gender)
 
     if min_year_first > min_year_second:
         print('Ilość danych o pierwszym województwie różni się od drugiego. Przerywam działanie...')
@@ -105,7 +105,7 @@ def get_user_request_task():
     print('|                                           |')
     print('| 1: Plik csv                               |')
     print('| 2: Baza SQLite                            |')
-    print('| 3: Api - wymagane połaczenie z internetem |')
+    print('| 3: Internetowe Api                        |')
     print('| 4. Pobierz dane z api i zapisz do bazy    |')
 
     for index in range(45):
@@ -127,6 +127,64 @@ def get_user_request_task():
     return task_to_do, data_source
 
 
+def get_prefecture_number(prefectures):
+
+    for index, prefecture in enumerate(prefectures):
+        print(str(index + 1) + '. ' + prefecture.name)
+
+    while True:
+        print('Twój wybór: ', end="")
+        first_prefecture = input()
+        try:
+            int(first_prefecture)
+            if 0 < int(first_prefecture) < 18:
+                return int(first_prefecture) - 1
+            else:
+                print('Podaj numer od 1 do 17.')
+        except:
+            print('Podaj numer')
+
+
+def get_year(min_year, max_year):
+    for year in range(min_year, max_year+1):
+        print(year)
+
+    while True:
+        print('Twój wybór: ', end="")
+        year = input()
+        try:
+            int(year)
+            if min_year <= int(year) <= max_year:
+                return int(year)
+            else:
+                print('Podaj numer od ' + str(min_year) + ' do ' + str(max_year))
+        except:
+            print('Podaj numer')
+
+
+def get_gender():
+    print('Wybierz płeć: ')
+    print('1. Kobiety')
+    print('2. Mężczyźni')
+    print('3. Obie płcie')
+
+    while True:
+        print('Twój wybór: ', end="")
+        type = input()
+        try:
+            int(type)
+            if int(type) == 1:
+                return "kobiety"
+            elif int(type) == 2:
+                return "mężczyźni"
+            elif int(type) == 3:
+                return "both"
+            else:
+                print('Podaj numer od 1 do 3')
+        except:
+            print('Podaj numer')
+
+
 def main():
     while True:
         # static default values
@@ -145,6 +203,9 @@ def main():
                 exam_data_from_api = get_data()
                 sqlite_data.create_table()
                 sqlite_data.put_data_to_database(exam_data_from_api)
+                # file_values = sqlite_data.get_all_data()
+                file_values = exam_data_from_api
+                break
             else:
                 break
 
@@ -158,7 +219,7 @@ def main():
             if file_values == 1:
                 print('Wystąpił błąd w czasie pobierania danych. Wykorzystam plik csv.')
                 column_names, file_values = read_csv(file_name)
-        else:
+        elif data_source != "read from api to database":
             column_names, file_values = read_csv(file_name)
 
         prefectures_names = []
@@ -174,31 +235,64 @@ def main():
                     prefectures[index].maturaResults.append(value)
 
         if task_to_do == 'amount':
+            print('Wybierz województwo: ')
+            first_prefecture = get_prefecture_number(prefectures)
+            min_year, max_year = prefectures[first_prefecture].find_min_max_years()
+            print('Wpisz rok: ')
+            year = get_year(min_year, max_year)
+            print('Wybierz płeć: ')
+            gender = get_gender()
+
             print('\nIlośc osób, które podeszły do egzminu\n')
-            print(str(prefectures[first_prefecture].name) + ' ' + str(prefectures[first_prefecture].approached(year)))
+            print(str(prefectures[first_prefecture].name) + ' ' + str(prefectures[first_prefecture].approached(year, gender)))
 
         elif task_to_do == 'ratio all':
+            print('Wybierz województwo: ')
+            first_prefecture = get_prefecture_number(prefectures)
+            print('Wybierz płeć: ')
+            gender = get_gender()
+
             print('\nŚrednia dla województwa\n')
-            prefectures[first_prefecture].pass_ratio_all()
+            prefectures[first_prefecture].pass_ratio_all(gender)
 
         elif task_to_do == 'best prefecture':
-            temp_ratios = [prefecture.pass_ratio(year) for prefecture in prefectures]
+            min_year, max_year = prefectures[first_prefecture].find_min_max_years()
+            print('Wpisz rok: ')
+            year = get_year(min_year, max_year)
+            print('Wybierz płeć: ')
+            gender = get_gender()
+
+            temp_ratios = [prefecture.pass_ratio(year, gender) for prefecture in prefectures]
             print('\nNajlepsze województwo w roku: ' + str(year) + ' to: ' + str(
                 prefectures[temp_ratios.index(max(temp_ratios))].name) + ' z średnią: ' + str(max(temp_ratios)))
 
         elif task_to_do == 'regression':
             print('\nRegresja w województwach: \n')
+            regression_year_start, regression_year_end = prefectures[first_prefecture].find_min_max_years()
+            print('Wybierz płeć: ')
+            gender = get_gender()
+
+            print(type(prefectures[0].maturaResults[0].scope))
+            print(type(prefectures[0].maturaResults[0].action))
+            print(type(prefectures[0].maturaResults[0].gender))
+            print(type(prefectures[0].maturaResults[0].year))
+            print(type(prefectures[0].maturaResults[0].amount))
             for prefecture in prefectures:
-                prefecture.regression(regression_year_start, regression_year_end)
+                prefecture.regression(regression_year_start, regression_year_end, gender)
 
         elif task_to_do == 'compare':
-            compare_two_prefectures(prefectures, first_prefecture, second_prefecture)
+            print('Wybierz województwo: ')
+            first_prefecture = get_prefecture_number(prefectures)
+            print('Wybierz drugie województwo: ')
+            second_prefecture = get_prefecture_number(prefectures)
+            print('Wybierz płeć: ')
+            gender = get_gender()
+
+            compare_two_prefectures(prefectures, first_prefecture, second_prefecture, gender)
 
 
 if __name__ == '__main__':
     main()
 
 # todo
-# manually select year and gender
-# tests / almost
-# readme
+# add additional tests

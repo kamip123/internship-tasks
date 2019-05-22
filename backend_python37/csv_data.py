@@ -13,6 +13,6 @@ def read_csv(file_name):
             counter += 1
         else:
             values = line.split(';')
-            file_values.append(MaturaResults(values[0], values[1], values[2], values[3], values[4]))
+            file_values.append(MaturaResults(values[0], values[1], values[2], int(values[3]), int(values[4])))
 
     return column_names, file_values

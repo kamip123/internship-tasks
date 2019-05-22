@@ -20,26 +20,26 @@ class Prefecture:
         temp_passed = 0
         if gender == "both":
             for result in self.maturaResults:
-                if int(result.year) == year:
+                if result.year == year:
                     if result.action == 'przystąpiło':
-                        temp_attended += int(result.amount)
+                        temp_attended += result.amount
                     elif result.action == 'zdało':
-                        temp_passed += int(result.amount)
+                        temp_passed += result.amount
         else:
             for result in self.maturaResults:
-                if int(result.year) == year:
+                if result.year == year:
                     if result.gender == gender:
                         if result.action == 'przystąpiło':
-                            temp_attended += int(result.amount)
+                            temp_attended += result.amount
                         elif result.action == 'zdało':
-                            temp_passed += int(result.amount)
+                            temp_passed += result.amount
 
         ratio = temp_passed * 100 / temp_attended
         return round(ratio, 3)
 
     def find_year(self, year):
         for result in self.maturaResults:
-            if result.year == str(year):
+            if result.year == year:
                 return True
         return False
 
@@ -54,7 +54,7 @@ class Prefecture:
                 print('wojewodztwo: ' + str(self.name) + ':' + str(year-1) + ' -> ' + str(year))
 
     def find_min_max_years(self):
-        temp_years = [int(result.year) for result in self.maturaResults]
+        temp_years = [result.year for result in self.maturaResults]
         return min(temp_years), max(temp_years)
 
     def pass_ratio_all(self, print_result=True, gender="both"):
@@ -72,18 +72,18 @@ class Prefecture:
         break_point = 0
         if gender == "both":
             for result in self.maturaResults:
-                if int(result.year) == year:
+                if result.year == year:
                     if result.action == 'przystąpiło':
-                        temp_attended += int(result.amount)
+                        temp_attended += result.amount
                         break_point += 1
                 if break_point == 2:
                     break
         else:
             for result in self.maturaResults:
-                if int(result.year) == year:
+                if result.year == year:
                     if result.action == 'przystąpiło':
                         if result.gender == gender:
-                            temp_attended += int(result.amount)
+                            temp_attended += result.amount
                             break
 
         return temp_attended

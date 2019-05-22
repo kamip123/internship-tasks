@@ -50,9 +50,10 @@ def get_data():
     else:
         data_of_ssc = [data['attributes'] for data in data['data']]
 
-    file_values = [MaturaResults(values['col1'], values['col2'], values['col3'], values['col4'], values['col5']) for values in data_of_ssc]
+    file_values = [MaturaResults(values['col1'], values['col2'], values['col3'], int(values['col4']), int(values['col5'])) for values in data_of_ssc]
     show_loading.run = False
-    print('\nRead data successfully')
+    time.sleep(1)
+    print('\nDane pobrano pomyślnie.')
 
     return file_values
 
