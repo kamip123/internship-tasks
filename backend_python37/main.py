@@ -271,12 +271,6 @@ def main():
             regression_year_start, regression_year_end = prefectures[first_prefecture].find_min_max_years()
             print('Wybierz płeć: ')
             gender = get_gender()
-
-            print(type(prefectures[0].maturaResults[0].scope))
-            print(type(prefectures[0].maturaResults[0].action))
-            print(type(prefectures[0].maturaResults[0].gender))
-            print(type(prefectures[0].maturaResults[0].year))
-            print(type(prefectures[0].maturaResults[0].amount))
             for prefecture in prefectures:
                 prefecture.regression(regression_year_start, regression_year_end, gender)
 
