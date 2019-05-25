@@ -3,8 +3,7 @@ table {
   border-collapse: collapse;
   text-align: center;
   border: 1px solid #202A25;
-  min-width: 600px;
-  max-width: 1500px;
+  width: 1200px;
 }
 table thead th {
   background-color: #5F4BB6;
@@ -16,6 +15,9 @@ table thead th {
 table thead th:hover {
   background-color: #C4EBC8;
   cursor: pointer;
+}
+table thead #created {
+  min-width: 150px;
 }
 table tbody tr:nth-child(even) {
   background-color: #86A5D9;
@@ -31,6 +33,36 @@ table tbody th {
 }
 table tbody td {
   border: 1px solid #202A25;
+}
+
+#container {
+  text-align: center;
+}
+
+#tableDiv {
+  margin: 10px;
+  width: 1200px;
+}
+
+#sortDiv {
+  background-color: #86A5D9;
+  padding: 10px;
+  margin: 10px;
+  width: 1180px;
+}
+
+#recentPostsDiv {
+  background-color: #86A5D9;
+  padding: 10px;
+  margin: 10px;
+  width: 1180px;
+}
+
+#bestRatioDiv {
+  background-color: #86A5D9;
+  padding: 10px;
+  margin: 10px;
+  width: 1180px;
 }
 
 /*# sourceMappingURL=styles.css.map */

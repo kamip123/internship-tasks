@@ -9,8 +9,7 @@ table {
   border-collapse: collapse;
   text-align: center;
   border: 1px solid $dark;
-  min-width: 600px;
-  max-width: 1500px;
+  width: 1200px;
 
   thead {
     th {
@@ -24,6 +23,9 @@ table {
         background-color: $funny;
         cursor: pointer;
       }
+    }
+    #created{
+      min-width: 150px;
     }
   }
 
@@ -49,7 +51,35 @@ table {
   }
 }
 
+#container{
+  text-align: center;
+}
 
+#tableDiv {
+  margin: 10px;
+  width: 1200px;
+}
+
+#sortDiv {
+  background-color: $secondary;
+  padding: 10px;
+  margin: 10px;
+  width: 1180px;
+}
+
+#recentPostsDiv {
+  background-color: $secondary;
+  padding: 10px;
+  margin: 10px;
+  width: 1180px;
+}
+
+#bestRatioDiv {
+  background-color: $secondary;
+  padding: 10px;
+  margin: 10px;
+  width: 1180px;
+}
 
 
 

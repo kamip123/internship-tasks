@@ -28,32 +28,44 @@ function getPostData() {
         count++;
     });
     posts.count = count;
+    console.log(posts);
 }
 
-function updateTable() {
-    let table = document.getElementById('posts_tbody');
+function printTable(postList){
+    let table = document.getElementById('postsTbody');
     table.innerHTML = '';
     let tempCounter = 1;
-    for (let key in posts.posts) {
+    for (let post in postList) {
         let newTr = document.createElement("tr");
         let counterTd = document.createElement("th");
         counterTd.innerHTML = tempCounter + '.';
         newTr.appendChild(counterTd);
-        for (let value in posts.posts[key]) {
-
+        for (let value in postList[post]) {
             if (value === 'created') {
                 let newTd = document.createElement("td");
-                newTd.innerHTML = new Date(posts.posts[key][value] * 1000);
+                let creationDate = new Date(postList[post][value] * 1000);
+                let day = ('0' + creationDate.getDate()).slice(-2);
+                let month = ('0' + creationDate.getMonth()).slice(-2);
+                let year = creationDate.getFullYear();
+                let hour = ('0' + creationDate.getHours()).slice(-2);
+                let minutes = ('0' + creationDate.getMinutes()).slice(-2);
+                newTd.innerHTML = day + '.' + month + '.' + year + ' ' + hour + ':' + minutes;
                 newTr.appendChild(newTd);
             } else {
                 let newTd = document.createElement("td");
-                newTd.innerHTML = posts.posts[key][value];
+                newTd.innerHTML = postList[post][value];
                 newTr.appendChild(newTd);
             }
         }
         table.appendChild(newTr);
         tempCounter++;
     }
+}
+
+function updateTable() {
+    let loading = document.getElementById('loadingHeader');
+    loading.innerHTML = '';
+    printTable(posts.posts);
 }
 
 function sortTable(columnName) {
@@ -153,29 +165,7 @@ function sortTable(columnName) {
         }
     }
 
-    let table = document.getElementById('posts_tbody');
-    table.innerHTML = '';
-    let tempCounter = 1;
-    for (let post in newPosts) {
-        let newTr = document.createElement("tr");
-        let counterTd = document.createElement("th");
-        counterTd.innerHTML = tempCounter + '.';
-        newTr.appendChild(counterTd);
-        for (let value in newPosts[post]) {
-            if (value === 'created') {
-                let newTd = document.createElement("td");
-                newTd.innerHTML = new Date(newPosts[post][value] * 1000);
-                newTr.appendChild(newTd);
-            } else {
-                let newTd = document.createElement("td");
-                newTd.innerHTML = newPosts[post][value];
-                newTr.appendChild(newTd);
-            }
-        }
-        table.appendChild(newTr);
-        tempCounter++;
-    }
-
+    printTable(newPosts);
 }
 
 function searchRecent() {
@@ -188,28 +178,22 @@ function searchRecent() {
         }
     }
 
-    let table = document.getElementById('posts_tbody');
-    table.innerHTML = '';
-    let tempCounter = 1;
-    for (let post in newPosts) {
-        let newTr = document.createElement("tr");
-        let counterTd = document.createElement("th");
-        counterTd.innerHTML = tempCounter + '.';
-        newTr.appendChild(counterTd);
-        for (let value in newPosts[post]) {
-            if (value == 'created') {
-                let newTd = document.createElement("td");
-                newTd.innerHTML = new Date(newPosts[post][value] * 1000);
-                newTr.appendChild(newTd);
-            } else {
-                let newTd = document.createElement("td");
-                newTd.innerHTML = newPosts[post][value];
-                newTr.appendChild(newTd);
-            }
+    printTable(newPosts);
+}
+
+function searchBestCommentUpsRatio() {
+    let max_value = 0;
+    let index;
+
+    for (let key in posts.posts) {
+        let ratio = posts.posts[key]['upvotes'] / posts.posts[key]['num_comments']
+        if(ratio > max_value){
+            max_value = ratio
+            index = key
         }
-        table.appendChild(newTr);
-        tempCounter++;
     }
+    let result = document.getElementById('result_p');
+    result.innerHTML = String(posts.posts[index]['title']) + ' with ratio: ' + String(Math.round(max_value)) + ":1";
 }
 
 function addListeners() {
@@ -282,6 +266,9 @@ function addListeners() {
 
     let searchBy24h = document.getElementById('searchBy24h');
     searchBy24h.addEventListener('click', searchRecent);
+
+    let searchBestRatio = document.getElementById('searchBestRatio');
+    searchBestRatio.addEventListener('click', searchBestCommentUpsRatio);
 }
 
 function setup() {
@@ -297,8 +284,3 @@ let sortedBy = 'nothing';
 let ascOrDesc = 1;
 window.onload = getData;
 
-// todo
-// data
-// 3) napisać funkcję, która zwróci tytuł postu z najwyższym stosunkiem głosów dodatnich i ujemnych (w przypadku kilku postów o jednakowych współczynnikach, wybrać najnowszy z nich)
-// zrobic readme
-// napisac testy

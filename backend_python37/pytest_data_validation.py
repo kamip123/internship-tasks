@@ -44,12 +44,37 @@ def test_contain_header(header_names):
 def test_contain_prefecture(file_data):
     names = [data.scope for data in file_data]
     assert 'Dolnośląskie' in names
+    assert 'Kujawsko-pomorskie' in names
+    assert 'Lubelskie' in names
+    assert 'Lubuskie' in names
+    assert 'Łódzkie' in names
+    assert 'Małopolskie' in names
+    assert 'Mazowieckie' in names
+    assert 'Opolskie' in names
+    assert 'Podkarpackie' in names
+    assert 'Podlaskie' in names
+    assert 'Pomorskie' in names
+
+
+def test_pefecture_value(file_data):
+    assert 'Dolnośląskie' == file_data[36].scope
+    assert 'przystąpiło' == file_data[36].action
+    assert 'mężczyźni' == file_data[36].gender
+    assert 2010 == int(file_data[36].year)
+    assert 9951 == int(file_data[36].amount)
+
+    assert 'Kujawsko-pomorskie' == file_data[73].scope
+    assert 'przystąpiło' == file_data[73].action
+    assert 'kobiety' == file_data[73].gender
+    assert 2010 == int(file_data[73].year)
+    assert 10636 == int(file_data[73].amount)
 
 
 def main():
     test_contain_header()
     test_uppercase()
     test_contain_prefecture()
+    test_pefecture_value()
 
 
 if __name__ == '__main__':

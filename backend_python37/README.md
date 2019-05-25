@@ -20,6 +20,19 @@ cd backend_python37
 pip install -r requirements.txt
 python main.py
 ```
+W razie problemów z API zmieniamy kod w pliku api_number.txt
+
+### Sposób użycia
+
+1. Po uruchomieniu programu zgodnie z instrukcją pojawi nam się lista możliwości.
+2. Wybieramy opcję, która nas interesuje.
+3. Wybieramy źródło danych.
+4. Wybieramy w zależności od wcześniej wybranej opcji: wojwództwo lub województwa.
+5. Wpisujemy rok jeżeli opcja, która wybraliśmy tego wymaga. np procentowa zdawalność nie potrzebuje podania roku, ponieważ wyświetla automatycznie dla wszystkich lat.
+6. Wybranie płci.
+7. Poczekanie na wyświetlenie wyniku.
+8. Wyjście z programu lub ponowne go użycie.  
+
 ### Inne
 
 1. Dane pochodzą z: `https://dane.gov.pl/dataset/1567/resource/17363`
@@ -27,9 +40,3 @@ python main.py
 2. Rekordy dla Polski traktuje tak samo jak inne województwa. W ten sposób można porównywać wyniki województwa do wyniku ogólnokrajowego.
 
 3. Zadanie pierwsze zinterpretowałem jako: Pokazanie liczby osób, które przystąpiły do egzaminu dla danego województwa w danym roku z możliwością podziału na płcie.
-
-
-
-
-
-

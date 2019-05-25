@@ -10,7 +10,7 @@
 <body>
 
 <div id="container">
-    <div id="table_div">
+    <div id="tableDiv">
         <table style=''>
             <thead>
             <tr>
@@ -23,20 +23,21 @@
                 <th id="created">Created</th>
             </tr>
             </thead>
-            <tbody id="posts_tbody">
+            <tbody id="postsTbody">
             <tr>
                 <th></th>
                 <th></th>
                 <th></th>
-                <th>Loading...</th>
+                <th></th>
                 <th></th>
                 <th></th>
                 <th></th>
             </tr>
             </tbody>
         </table>
+        <h1 id="loadingHeader">Loading...</h1>
     </div>
-    <div>
+    <div id="sortDiv">
         <p>Sort By:</p>
         <button id="titleButton">Title</button>
         <button id="upVotesButton">Up Votes</button>
@@ -45,9 +46,15 @@
         <button id="commentsButton">Comments</button>
         <button id="createdButton">Created</button>
     </div>
-    <div>
+    <div id="recentPostsDiv">
         <p>Get posts from last 24h</p>
         <button id="searchBy24h">Search for recent posts</button>
+    </div>
+    <div id="bestRatioDiv">
+        <p>Get best ups - comments ratio</p>
+        <button id="searchBestRatio">Search best ratio</button>
+        <p>Best up votes:comments ratio:</p>
+        <p id="result_p"></p>
     </div>
 
 </div>
