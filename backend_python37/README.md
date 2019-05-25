@@ -33,6 +33,12 @@ W razie problemów z API zmieniamy kod w pliku api_number.txt
 7. Poczekanie na wyświetlenie wyniku.
 8. Wyjście z programu lub ponowne go użycie.  
 
+### Testy
+
+ ```
+ pytest pytest_data_validation.py
+ ```
+
 ### Inne
 
 1. Dane pochodzą z: `https://dane.gov.pl/dataset/1567/resource/17363`
