@@ -7,7 +7,7 @@ from data_class import MaturaResults
 
 
 def show_loading_screen():
-    print('Loading', end="")
+    print('Ładowanie', end="")
     while getattr(threading.currentThread(), "run", True):
         time.sleep(1)
         print('.', end="")
@@ -34,10 +34,11 @@ def get_data():
     if data['links']['self'] != data['links']['last']:
         data_of_ssc = [data['attributes'] for data in data['data']]
         last_page = data['links']['last']
-        last_page = last_page[last_page.find('page=')+5:]
+        last_page = last_page[last_page.find('page=') + 5:]
 
-        for i in range(2, int(last_page)+1):
-            with request.urlopen('https://api.dane.gov.pl/resources/' + api_number + '/data?page=' + str(i)) as response:
+        for i in range(2, int(last_page) + 1):
+            with request.urlopen(
+                    'https://api.dane.gov.pl/resources/' + api_number + '/data?page=' + str(i)) as response:
                 if response.getcode() == 200:
                     source = response.read()
                     data = json.loads(source)
@@ -50,7 +51,9 @@ def get_data():
     else:
         data_of_ssc = [data['attributes'] for data in data['data']]
 
-    file_values = [MaturaResults(values['col1'], values['col2'], values['col3'], int(values['col4']), int(values['col5'])) for values in data_of_ssc]
+    file_values = [
+        MaturaResults(values['col1'], values['col2'], values['col3'], int(values['col4']), int(values['col5'])) for
+        values in data_of_ssc]
     show_loading.run = False
     time.sleep(1)
     print('\nDane pobrano pomyślnie.')

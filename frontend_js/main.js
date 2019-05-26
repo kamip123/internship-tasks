@@ -30,7 +30,7 @@ function getPostData() {
     console.log(posts);
 }
 
-function printTable(postList){
+function printTable(postList) {
     let table = document.getElementById('postsTbody');
     table.innerHTML = '';
     let tempCounter = 1;
@@ -187,7 +187,7 @@ function searchBestCommentUpsRatio() {
 
     for (let key in posts.posts) {
         let ratio = posts.posts[key]['upvotes'] / posts.posts[key]['num_comments']
-        if(ratio > max_value){
+        if (ratio > max_value) {
             max_value = ratio
             index = key
         }

@@ -56,7 +56,6 @@ def switch_data_source(value):
 
 
 def get_user_request_task():
-
     print('\n')
     for index in range(48):
         if index == 0:
@@ -128,7 +127,6 @@ def get_user_request_task():
 
 
 def get_prefecture_number(prefectures):
-
     for index, prefecture in enumerate(prefectures):
         print(str(index + 1) + '. ' + prefecture.name)
 
@@ -146,7 +144,7 @@ def get_prefecture_number(prefectures):
 
 
 def get_year(min_year, max_year):
-    for year in range(min_year, max_year+1):
+    for year in range(min_year, max_year + 1):
         print(year)
 
     while True:
@@ -244,7 +242,8 @@ def main():
             gender = get_gender()
 
             print('\nIlośc osób, które podeszły do egzminu\n')
-            print(str(prefectures[first_prefecture].name) + ' ' + str(prefectures[first_prefecture].approached(year, gender)))
+            print(str(prefectures[first_prefecture].name) + ' ' + str(
+                prefectures[first_prefecture].approached(year, gender)))
 
         elif task_to_do == 'ratio all':
             print('Wybierz województwo: ')

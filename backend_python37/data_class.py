@@ -49,9 +49,9 @@ class Prefecture:
         if not self.find_year(year_end):
             return -1
 
-        for year in range(year_start + 1, year_end+1):
-            if self.pass_ratio(year) < self.pass_ratio(year-1):
-                print('wojewodztwo: ' + str(self.name) + ':' + str(year-1) + ' -> ' + str(year))
+        for year in range(year_start + 1, year_end + 1):
+            if self.pass_ratio(year) < self.pass_ratio(year - 1):
+                print('wojewodztwo: ' + str(self.name) + ':' + str(year - 1) + ' -> ' + str(year))
 
     def find_min_max_years(self):
         temp_years = [result.year for result in self.maturaResults]

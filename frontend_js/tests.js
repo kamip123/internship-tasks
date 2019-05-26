@@ -3,7 +3,7 @@ let posts = {"count": 0, "posts": []};
 
 QUnit.module("Data validation", {
     before: function () {
-        return new Promise( function( resolve, reject ) {
+        return new Promise(function (resolve, reject) {
             let url = 'https://www.reddit.com/r/funny.json';
             fetch(url)
                 .then(res => res.json())
@@ -27,40 +27,40 @@ QUnit.module("Data validation", {
                     resolve();
                 })
                 .catch(err => {
-                    reject( err );
+                    reject(err);
                 });
-        } );
+        });
     }
 });
 
-QUnit.test('Posts count value', function( assert ) {
-    assert.equal( posts.count, 26, 'Value should be 26' );
+QUnit.test('Posts count value', function (assert) {
+    assert.equal(posts.count, 26, 'Value should be 26');
 });
 
-QUnit.test('Amount of posts recived - array length', function( assert ) {
-    assert.equal( posts.posts.length, 26, 'Value should be 26' );
+QUnit.test('Amount of posts recived - array length', function (assert) {
+    assert.equal(posts.posts.length, 26, 'Value should be 26');
 });
 
-QUnit.test('Score not 0', function( assert ) {
-    assert.ok( function( ){
+QUnit.test('Score not 0', function (assert) {
+    assert.ok(function () {
         return posts.posts[0].score > 0;
-    }, 'Value should be bigger than 0 and is ' + String(posts.posts[0].score) );
+    }, 'Value should be bigger than 0 and is ' + String(posts.posts[0].score));
 });
 
-QUnit.test('Sort validation time asc', function( assert ) {
+QUnit.test('Sort validation time asc', function (assert) {
     let newPosts = sortTable('created', 1);
     console.log(newPosts);
-    assert.ok( function(){
+    assert.ok(function () {
         return newPosts[0].created < newPosts[1].created
-    }, 'The first value should be smaller than the second one: ' + String(newPosts[0].created) + ' < ' + String(newPosts[1].created) );
+    }, 'The first value should be smaller than the second one: ' + String(newPosts[0].created) + ' < ' + String(newPosts[1].created));
 });
 
-QUnit.test('Sort validation score asc', function( assert ) {
+QUnit.test('Sort validation score asc', function (assert) {
     let newPosts = sortTable('score', 1);
     console.log(newPosts);
-    assert.ok( function(){
+    assert.ok(function () {
         return newPosts[0].score < newPosts[1].score
-    }, 'The first value should be smaller than the second one: ' + String(newPosts[0].score) + ' < ' + String(newPosts[1].score) );
+    }, 'The first value should be smaller than the second one: ' + String(newPosts[0].score) + ' < ' + String(newPosts[1].score));
 });
 
 function sortTable(columnName, ascOrDesc) {
