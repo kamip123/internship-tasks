@@ -22,7 +22,6 @@ function getPostData() {
             "score": post.data.score,
             "num_comments": post.data.num_comments,
             "created": post.data.created
-            //"created": new Date(post.data.created) todo
         };
         posts.posts.push(newPost);
         count++;
@@ -45,7 +44,7 @@ function printTable(postList){
                 let newTd = document.createElement("td");
                 let creationDate = new Date(postList[post][value] * 1000);
                 let day = ('0' + creationDate.getDate()).slice(-2);
-                let month = ('0' + creationDate.getMonth()).slice(-2);
+                let month = ('0' + (creationDate.getMonth() + 1)).slice(-2);
                 let year = creationDate.getFullYear();
                 let hour = ('0' + creationDate.getHours()).slice(-2);
                 let minutes = ('0' + creationDate.getMinutes()).slice(-2);
@@ -170,10 +169,11 @@ function sortTable(columnName) {
 
 function searchRecent() {
     let newPosts = [];
+    let currentH = Math.floor(Date.now() / 1000);
     let last24h = Math.floor(Date.now() / 1000) - (24 * 60 * 60);
 
     for (let key in posts.posts) {
-        if (posts.posts[key]['created'] >= last24h) {
+        if (posts.posts[key]['created'] >= last24h && posts.posts[key]['created'] <= currentH) {
             newPosts.push(posts.posts[key]);
         }
     }
